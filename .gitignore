@@ -38,6 +38,8 @@ Thumbs.db
 Build/
 Releases/
 
+*_BuiltData.uasset
+
 # Crash dumps
 *.dmp
 

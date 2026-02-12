@@ -4,6 +4,7 @@
 #include "Nexus_02/BuildSystem/Actors/BuildPieceActor.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/PlayerController.h"
+#include "GameFramework/Character.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 
@@ -119,4 +120,49 @@ bool UBuildToolComponent::TryPlaceSelected()
 	);
 
 	return (Spawned != nullptr);
+}
+
+// Performs a non-destructive camera trace used for preview positioning.
+bool UBuildToolComponent::GetPlacementPreview(FHitResult& OutHit) // Computes preview trace, transform, and validity.
+{
+	ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner()); // Get the owning character (we assume the component is on a character).
+	if (!OwnerCharacter) // Abort if we have no valid owning character.
+	{
+		bPlacementValid = false; // Mark preview invalid because we cannot compute placement.
+		return false; // Return false to indicate we did not get a usable preview hit.
+	}
+
+	FVector Start = FVector::ZeroVector; // Will hold the camera/eyes start location for the trace.
+	FRotator ViewRotation = FRotator::ZeroRotator; // Will hold the camera/eyes rotation for the trace direction.
+	OwnerCharacter->GetActorEyesViewPoint(Start, ViewRotation); // Get viewpoint from the character's eyes/camera.
+
+	const float TraceDistance = 5000.f; // How far forward we trace for placement preview.
+	const FVector End = Start + (ViewRotation.Vector() * TraceDistance); // Compute trace end point from view direction.
+
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(OwnerCharacter);
+
+	const bool bHit = GetWorld()->LineTraceSingleByChannel(
+		OutHit,
+		Start,
+		End,
+		ECC_Visibility,
+		Params
+	);
+
+	if (!bHit)
+	{
+		bPlacementValid = false;
+		return false;
+	}
+
+	const FVector SpawnLoc = OutHit.ImpactPoint;
+	const float OwnerYaw = OwnerCharacter->GetActorRotation().Yaw;
+	const FRotator SpawnRot = FRotator(0.f, OwnerYaw, 0.f);
+
+	CandidateTransform = FTransform(SpawnRot, SpawnLoc, FVector::OneVector);
+
+	bPlacementValid = OutHit.bBlockingHit;
+
+	return true;
 }

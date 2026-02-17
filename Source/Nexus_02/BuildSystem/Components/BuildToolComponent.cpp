@@ -76,7 +76,7 @@ bool UBuildToolComponent::DoPlacementTrace(FHitResult& OutHit) const
 	);
 
 	// Debug line so you can SEE the trace in-editor (remove later).
-	DrawDebugLine(World, TraceStart, TraceEnd, bHit ? FColor::Green : FColor::Red, false, 2.0f, 0, 1.0f);
+	// DrawDebugLine(World, TraceStart, TraceEnd, bHit ? FColor::Green : FColor::Red, false, 2.0f, 0, 1.0f);
 
 	return bHit;
 }

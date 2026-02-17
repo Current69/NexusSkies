@@ -106,9 +106,9 @@ bool UBuildToolComponent::TryPlaceSelected()
 
 	// Spawn at the hit point.
 	// Rotation is flat for now (we'll improve later).
-	const FVector SpawnLoc = Hit.ImpactPoint;
-	const FRotator SpawnRot = FRotator::ZeroRotator;
-
+	const FVector SpawnLoc = CandidateTransform.GetLocation();
+	const FRotator SpawnRot = CandidateTransform.GetRotation().Rotator();
+	
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
@@ -118,7 +118,7 @@ bool UBuildToolComponent::TryPlaceSelected()
 		SpawnRot,
 		SpawnParams
 	);
-
+	
 	return (Spawned != nullptr);
 }
 

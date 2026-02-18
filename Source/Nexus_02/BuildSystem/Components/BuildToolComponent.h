@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Data/BuildPieceDefinition.h"
 #include "BuildToolComponent.generated.h"
 
 // Forward declare so we don't include more headers than needed
@@ -28,6 +29,10 @@ public:
 	// Stores whether the current candidate placement is valid according to C++ rules.
 	UPROPERTY(BlueprintReadOnly, Category="Build|Preview")
 	bool bPlacementValid = false; // True means preview should show "valid" material, false means "invalid".
+
+	// The data asset that defines the currently selected build piece
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Build|Selection")
+	UBuildPieceDefinition* SelectedDefinition;
 
 	// Call this to attempt a placement at the camera trace hit point.
 	UFUNCTION(BlueprintCallable, Category="Build Tool")

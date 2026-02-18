@@ -118,6 +118,12 @@ bool UBuildToolComponent::TryPlaceSelected()
 		SpawnRot,
 		SpawnParams
 	);
+
+	// If we successfully spawned a build piece and have a definition selected, initialize it
+	if (Spawned && SelectedDefinition)
+	{
+		Spawned->InitializeFromDefinition(SelectedDefinition);
+	}
 	
 	return (Spawned != nullptr);
 }

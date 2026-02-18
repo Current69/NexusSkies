@@ -23,3 +23,18 @@ ABuildPieceActor::ABuildPieceActor()
 	MeshComponent->SetGenerateOverlapEvents(true);
 
 }
+
+// Sets the definition reference when the actor is created
+void ABuildPieceActor::InitializeFromDefinition(UBuildPieceDefinition* InDefinition)
+{
+	Definition = InDefinition;
+
+	if (Definition)
+	{
+		// Copy the structural domain from the data asset into the runtime actor
+		StructureDomain = Definition->StructureDomain;
+
+		UE_LOG(LogTemp, Warning, TEXT("BuildPiece initialized with domain: %d"),
+			static_cast<uint8>(StructureDomain));
+	}
+}
